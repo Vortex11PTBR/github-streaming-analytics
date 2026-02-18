@@ -93,12 +93,50 @@ python -m src.producer.github_producer --once
 python -m src.consumer.spark_consumer
 ```
 
-Screenshots (exemplos)
-- Producer logs (ex.: docs/screenshots/producer-cli.png) — saída JSON estruturado
-- Spark UI (ex.: docs/screenshots/spark-ui.png) — job de streaming ativo
-- Dashboard Plotly (ex.: docs/screenshots/dashboard.png)
+## Screenshots and LinkedIn images
 
-(Coloque imagens em docs/screenshots/ com nomes acima para referencia)
+To create polished screenshots for the `README` or LinkedIn, run the small demo generator included in `scripts/` which emits terminal output and a demo JSON file you can capture.
+
+Steps:
+
+1. Activate your venv and install minimal deps (safe, avoids full `requirements.txt` issues):
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install requests kafka-python pydantic-settings structlog tenacity
+```
+
+2. Generate demo output (prints terminal logs and writes `docs/images/demo_events.json`):
+
+```powershell
+python scripts\generate_demo_output.py
+```
+
+3. Recommended screenshots to take:
+- Terminal output showing producer logs (capture the printed lines from step 2).
+- `docs/images/demo_events.json` opened in your editor showing the JSON (use a clean editor window).
+- Kafka container logs (optional): `docker compose logs -f kafka`.
+
+4. Save images to `docs/images/` and reference them in the `README` with Markdown:
+
+```md
+![Producer terminal output](docs/images/screenshot-producer-terminal.png)
+![Demo events JSON](docs/images/demo_events_json.png)
+```
+
+If you want, I can generate placeholder images and add them to `docs/images/`, or push the repo to your GitHub and open a PR with screenshots you supply — tell me which you prefer.
+
+## Quick demo & smoke test
+
+You can run a quick end-to-end smoke test (requires Docker Compose with Kafka):
+
+```powershell
+docker compose up -d
+python scripts/smoke_test.py
+```
+
+This script publishes 5 messages to `smoke_test_topic` and verifies consumption.
 
 Configuração
 -------------
