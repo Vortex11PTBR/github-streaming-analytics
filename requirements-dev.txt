@@ -1,0 +1,10 @@
+black
+flake8
+mypy
+types-requests
+# `types-pandas` has no official PyPI package; use `pandas-stubs` or omit in some envs
+pandas-stubs
+types-PyYAML
+pytest
+pytest-mock
+pre-commit
