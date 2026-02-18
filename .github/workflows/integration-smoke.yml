@@ -16,10 +16,10 @@ jobs:
       - name: Start docker compose services
         run: |
           docker compose up -d
-      - name: Wait for Kafka to be ready
+      - name: Wait for Kafka and Schema Registry to be ready
         run: |
-          for i in `seq 1 30`; do
-            docker compose ps | grep -q kafka && break || sleep 2;
+          for i in `seq 1 60`; do
+            docker compose ps | grep -q kafka && docker compose ps | grep -q schema-registry && break || sleep 2;
           done
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -28,8 +28,11 @@ jobs:
       - name: Install runtime deps
         run: |
           python -m pip install --upgrade pip
-          pip install kafka-python
-      - name: Run smoke test
+          pip install kafka-python requests fastavro
+      - name: Register schema and produce Avro messages
+        run: |
+          python scripts/register_schema_and_produce.py --count 3
+      - name: Run smoke test (consume produced messages)
         run: |
           python scripts/smoke_test.py
       - name: Tear down compose
