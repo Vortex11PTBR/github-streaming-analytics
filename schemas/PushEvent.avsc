@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "name": "PushEvent",
+  "fields": [
+    {"name": "id", "type": "string"},
+    {"name": "type", "type": "string"},
+    {"name": "created_at", "type": "string"},
+    {"name": "repo", "type": {"type": "record", "name": "Repo", "fields": [{"name": "name", "type": "string"}]}},
+    {"name": "payload", "type": {"type": "record", "name": "Payload", "fields": [{"name": "size", "type": "int"}]}}
+  ]
+}

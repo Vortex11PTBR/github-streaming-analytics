@@ -138,6 +138,29 @@ python scripts/smoke_test.py
 
 This script publishes 5 messages to `smoke_test_topic` and verifies consumption.
 
+## Avro / Schema Registry example
+
+The project supports Avro serialization using local Avro schemas.
+To try Avro locally:
+
+1. Enable Avro in config (via environment or `.env`):
+
+```powershell
+$env:USE_AVRO = "true"
+$env:AVRO_SCHEMA_DIR = "schemas"
+```
+
+2. Start Kafka and run the Avro demo producer:
+
+```powershell
+docker compose up -d
+python scripts/avro_demo.py --count 5
+```
+
+This publishes Avro-encoded messages to topic `github_events.PushEvent` using
+`schemas/PushEvent.avsc`. In production you'd use a Schema Registry; this demo
+shows how to use `fastavro` with a local schema directory.
+
 Configuração
 -------------
 Centralizada via `src/config.py` (`config.AppConfig`). Exemplo .env:
