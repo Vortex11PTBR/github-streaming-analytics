@@ -30,3 +30,10 @@ Communicating
 - Use English or Portuguese in issues and PRs. Be descriptive and include logs or error output.
 
 Thank you for improving this project!
+
+Runbook highlights
+- Start infra: `docker compose up -d`
+- Quick smoke test: `python scripts/smoke_test.py`
+- Avro demo: `python scripts/register_schema_and_produce.py --count 5` then `python scripts/consume_avro_demo.py` to decode
+
+If you'd like, open an issue and request that I prepare a PR with screenshots/GIFs for the README.
