@@ -157,26 +157,26 @@ Executar Spark local:
 python -m src.consumer.spark_consumer
 ```
 
-## Screenshots & Demo Images
+## 📸 Screenshots & Demo
 
-📸 **Screenshots serão adicionados em breve!** Rode localmente para ver:
+### Producer em Ação
+Terminal output do producer consumindo GitHub Events API e publicando no Kafka:
 
-```powershell
-.\.venv\Scripts\Activate.ps1
-python scripts\generate_demo_output.py
-```
+![Producer terminal output](docs/images/screenshot-producer-terminal.png)
 
-Exemplo de output esperado:
+### Eventos Capturados (JSON)
+Exemplo de eventos GitHub processados pelo pipeline:
 
-```json
-{
-  "id": "12345",
-  "type": "PushEvent",
-  "actor": {"login": "johndoe"},
-  "repo": {"name": "johndoe/awesome-project"},
-  "created_at": "2026-02-20T10:30:00Z"
-}
-```
+![Demo events JSON](docs/images/demo_events_json.png)
+
+### Kafka Logs
+Logs do cluster Kafka recebendo mensagens em tempo real:
+
+![Kafka logs](docs/images/kafka-logs.png)
+
+---
+
+**💡 Quer rodar localmente?** Siga os passos em [Quick Start](#quick-start-local)
 
 ## Quick demo & smoke test
 
