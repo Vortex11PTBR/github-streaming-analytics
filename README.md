@@ -159,24 +159,54 @@ python -m src.consumer.spark_consumer
 
 ## 📸 Screenshots & Demo
 
-### Producer em Ação
+### 🚀 Producer em Ação
 Terminal output do producer consumindo GitHub Events API e publicando no Kafka:
 
 ![Producer terminal output](docs/images/screenshot-producer-terminal.png)
 
-### Eventos Capturados (JSON)
+*Producer fazendo polling da API, respeitando rate limits e publicando em tópicos Kafka particionados por tipo de evento.*
+
+---
+
+### 📄 Eventos Capturados (JSON)
 Exemplo de eventos GitHub processados pelo pipeline:
 
 ![Demo events JSON](docs/images/demo_events_json.png)
 
-### Kafka Logs
+*Estrutura dos eventos: `PushEvent`, `PullRequestEvent`, `WatchEvent` com metadata do repo, actor e timestamp.*
+
+---
+
+### 📊 Kafka Cluster Logs
 Logs do cluster Kafka recebendo mensagens em tempo real:
 
 ![Kafka logs](docs/images/kafka-logs.png)
 
+*Kafka broker processando mensagens nos tópicos `github_events.*` com confirmação de offset.*
+
 ---
 
-**💡 Quer rodar localmente?** Siga os passos em [Quick Start](#quick-start-local)
+### 💡 Quer Reproduzir Localmente?
+
+```bash
+# 1. Clone e suba a infra
+git clone https://github.com/SEU_USER/github-streaming-analytics.git
+cd github-streaming-analytics
+docker compose up -d
+
+# 2. Instale dependências
+python -m venv .venv
+source .venv/bin/activate  # Windows: .\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+
+# 3. Rode o producer
+python -m src.producer.github_producer --once
+
+# 4. Veja os logs do Kafka
+docker compose logs -f kafka
+```
+
+**Tempo estimado:** 5 minutos ⏱️
 
 ## Quick demo & smoke test
 
