@@ -38,3 +38,11 @@ spark-warehouse/
 *.parquet
 data/
 
+# Ignore any virtualenv variations
+.venv*
+
+
+# ignore virtualenvs
+.venv
+.venv-*
+venv
