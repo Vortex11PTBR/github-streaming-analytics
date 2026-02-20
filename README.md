@@ -1,12 +1,14 @@
-   ____ _ _   _ _   _ _   _ _ _ _ _   _   _  __ _  _   _  _   _ ___ _  _ 
+```
+  ____ _ _   _ _   _ _   _ _ _ _ _   _   _  __ _  _   _  _   _ ___ _  _ 
   / ___(_) |_| | | | | | | | ____| \ | | / _| || | | || | | | |_ _| \| |
  | |  _| | __| | | | | | |  _| |  \| | | |_| || |_| || |_| | | || .` |
  | |_| | | |_| |_| |_| |_| |___| |\  | |  _|__   _|__   _|__   _| |_|_|
   \____|_|\__|\___/ \___/|_____|_| \_| |_|     |_|    |_|   |_|  (_)
+```
 
-GitHub Events Real-Time Streaming Analytics
+# GitHub Events Real-Time Streaming Analytics
 
-Badges
+## Badges
 - ![Python](https://img.shields.io/badge/python-3.11%2B-blue)
 - ![License](https://img.shields.io/badge/license-MIT-green)
 - ![Build](https://github.com/SEU_USER/github-streaming-analytics/workflows/CI/badge.svg)
@@ -16,23 +18,26 @@ GitHub Events + Dev Analytics — API + Kafka + Spark, built for devs (NA & BR).
 
 Quick hero pitch: Learn API integration, backpressure, serialization (JSON/Avro), Kafka ops and Spark Structured Streaming in a single repo — great for data engineering interviews.
 
-Resumo
------
+## Resumo
+
 Pipeline de streaming que ingere GitHub Events, publica em Kafka, processa com Spark Structured Streaming e persiste métricas em Parquet para análises e dashboards.
 
-Arquitetura (Mermaid)
----------------------
+## Arquitetura (Mermaid)
+
 ```mermaid
 graph LR
   A[GitHub Events API] --> B[Producer Service]
   B -->|Kafka Topics per Event Type| C[Kafka Cluster]
   C --> D[Spark Structured Streaming]
-  D --> E[Parquet (S3 / local)]
+  D --> E[Parquet Storage]
   E --> F[Analytics / Dashboards]
   B --> G[DLQ Topic]
+  
   subgraph Observability
-    H[Prometheus] & I[OpenTelemetry Collector]
+    H[Prometheus]
+    I[OpenTelemetry Collector]
   end
+  
   B --> H
   D --> I
 ```
@@ -91,10 +96,10 @@ events_by_repo_1h = stream_df.groupBy(window(col('event_ts'), '1 hour'), col('re
 This repo is ideal to demonstrate practical data-engineering skills: API integration, streaming ingestion with Kafka, real-time processing with Spark, and analytics-ready storage in Parquet. Suitable talking points for interviews: backpressure, schema management (Avro), observability (OTEL), and cloud deployment (MSK/EMR).
 
 ## Quick start (local)
--------------------
+
 Prereqs: Docker (or Docker Desktop), `docker compose` v2+, Python 3.11+, git.
 
-1. Install dependencies (virtualenv optional)
+### 1. Install dependencies (virtualenv optional)
 ```bash
 # POSIX/MacOS
 python -m venv .venv
@@ -107,7 +112,7 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-2. Start local infra (Kafka + Zookeeper). Spark is opt-in via a compose profile.
+### 2. Start local infra (Kafka + Zookeeper). Spark is opt-in via a compose profile.
 ```bash
 # Start core infra (Kafka + Zookeeper)
 docker compose up -d
@@ -119,7 +124,7 @@ docker compose --profile spark up -d
 docker compose ps
 ```
 
-3. Run producer locally (configured via env or `.env`)
+### 3. Run producer locally (configured via env or `.env`)
 ```bash
 # POSIX
 export KAFKA_BOOTSTRAP_SERVERS="localhost:9092"
@@ -130,44 +135,48 @@ $env:KAFKA_BOOTSTRAP_SERVERS = "localhost:9092"
 python -m src.producer.github_producer
 ```
 
-4. Run Spark consumer (when Spark service is available)
+### 4. Run Spark consumer (when Spark service is available)
 ```bash
 # If you started Spark via profile above
 python -m src.consumer.spark_consumer
 ```
 
-5. Analytics & dashboards
+### 5. Analytics & dashboards
 - Load Parquet and generate reports with `src/analytics/metrics.py`.
 - Notebook example: [notebooks/exploratory_analysis.ipynb](notebooks/exploratory_analysis.ipynb)
 
-Exemplos de uso (comandos & screenshots)
-----------------------------------------
-- executar um batch de ingestão:
+## Exemplos de uso (comandos & screenshots)
+
+Executar um batch de ingestão:
 ```bash
 python -m src.producer.github_producer --once
 ```
-- executar Spark local:
+
+Executar Spark local:
 ```bash
 python -m src.consumer.spark_consumer
 ```
 
 ## Screenshots & Demo Images
 
-Exemplos gerados localmente (já incluídos em `docs/images/`):
-
-![Producer terminal output](docs/images/screenshot-producer-terminal.png)
-
-![Demo events JSON](docs/images/demo_events_json.png)
-
-Se preferir gerar você mesmo, rode:
+📸 **Screenshots serão adicionados em breve!** Rode localmente para ver:
 
 ```powershell
 .\.venv\Scripts\Activate.ps1
 python scripts\generate_demo_output.py
-python scripts\generate_screenshots.py
 ```
 
-Os comandos acima criam `docs/images/demo_events.json`, `screenshot-producer-terminal.png` e `demo_events_json.png`.
+Exemplo de output esperado:
+
+```json
+{
+  "id": "12345",
+  "type": "PushEvent",
+  "actor": {"login": "johndoe"},
+  "repo": {"name": "johndoe/awesome-project"},
+  "created_at": "2026-02-20T10:30:00Z"
+}
+```
 
 ## Quick demo & smoke test
 
@@ -203,8 +212,8 @@ This publishes Avro-encoded messages to topic `github_events.PushEvent` using
 `schemas/PushEvent.avsc`. In production you'd use a Schema Registry; this demo
 shows how to use `fastavro` with a local schema directory.
 
-Configuração
--------------
+## Configuração
+
 Centralizada via `src/config.py` (`config.AppConfig`). Exemplo .env:
 ```
 GITHUB_TOKEN=
@@ -213,13 +222,13 @@ KAFKA_TOPIC_PREFIX=github_events
 METRICS_ENABLED=false
 ```
 
-Observability & Tracing
------------------------
+## Observability & Tracing
+
 - tracing: `src/tracing.py` (`tracing.setup_tracer`) (OTLP) — configure `OTEL_EXPORTER_OTLP_ENDPOINT`
 - metrics: prometheus client expõe métricas quando `METRICS_ENABLED=true`
 
-Pre-commit
----------
+## Pre-commit
+
 Instale e habilite os hooks do `pre-commit` localmente para manter formatação e lint consistentes:
 
 ```bash
@@ -228,9 +237,8 @@ pre-commit install
 pre-commit run --all-files
 ```
 
+## Security & Production Hardening
 
-Security & Production Hardening
---------------------------------
 See `docs/security.md` for deployment recommendations (TLS, SASL, IAM, MSK). Key points:
 
 - Use TLS (SSL) for Kafka listeners in production and configure `KAFKA_LISTENER_SECURITY_PROTOCOL_MAP` appropriately.
@@ -240,33 +248,32 @@ See `docs/security.md` for deployment recommendations (TLS, SASL, IAM, MSK). Key
 
 Runbook snippets and example configurations are in `docs/security.md`.
 
-Métricas esperadas / Benchmarks
--------------------------------
- - **Throughput esperado**: 500–2,000 eventos/seg por instância
- - **Latência (p99)**: < 100 ms
- - **Escala horária**: ~3.6M eventos/hora (1k eventos/seg × 3600s)
+## Métricas esperadas / Benchmarks
 
-Troubleshooting
----------------
+- **Throughput esperado**: 500–2,000 eventos/seg por instância
+- **Latência (p99)**: < 100 ms
+- **Escala horária**: ~3.6M eventos/hora (1k eventos/seg × 3600s)
+
+## Troubleshooting
+
 - Kafka unreachable: verifique `KAFKA_BOOTSTRAP_SERVERS` e `docker-compose ps`; logs em `docker-compose logs kafka`.
 - Rate limit GitHub: parser no `src/producer/github_producer.fetch_events` já respeita X-RateLimit; use `GITHUB_TOKEN` para limites maiores.
 - Falha na serialização Avro: confirme schemas em `AVRO_SCHEMA_DIR` e `USE_AVRO=true`.
 - Tests falhando: execute `pytest -q` (tests: `tests/test_github_producer.py`).
 - OpenTelemetry não ativa: variável `OTEL_EXPORTER_OTLP_ENDPOINT` ausente — tracing é opcional e tem fallback seguro (ver `src/tracing.py`).
 
-Contribuindo
-+ ------------
-+ 1. Fork -> branch `feature/descrição` -> PR
-+ 2. Formatação: Black, lint com Flake8, tipagem com MyPy
-+ 3. Rode testes: `pytest -v`
-+ 4. Siga conventional commits
-+ 
-+ ```bash
-+ black . && flake8 && mypy src && pytest -v
-+ ```
+## Contribuindo
 
-Roadmap
--------
+1. Fork -> branch `feature/descrição` -> PR
+2. Formatação: Black, lint com Flake8, tipagem com MyPy
+3. Rode testes: `pytest -v`
+4. Siga conventional commits
+
+```bash
+black . && flake8 && mypy src && pytest -v
+```
+
+## Roadmap
 
 - [ ] TLS/SASL para Kafka (MSK-ready)
 - [ ] Schema Registry + Confluent/Glue integration
@@ -276,23 +283,23 @@ Roadmap
 - [ ] Real-time dashboards com auth & RBAC
 - [ ] CI: GitHub Actions pipeline (lint/test/build badges)
 
-Licença
--------
+## Licença
+
 MIT (adapte conforme necessário)
 
-Referências no repositório
--------------------------
-- Config: `src/config.py` (`src/config.py`)
-- Producer principal: `src/producer/github_producer.GitHubProducer` (`src/producer/github_producer.py`)
-- Spark consumer: `src/consumer/spark_consumer.compute_metrics` (`src/consumer/spark_consumer.py`)
-- Analytics helpers: `src/analytics/metrics.load_parquet` (`src/analytics/metrics.py`)
-- Tracing helpers: `src/tracing.setup_tracer` (`src/tracing.py`)
-- Tests: `tests/test_github_producer.py` (`tests/test_github_producer.py`)
-- Compose: `docker-compose.yml` (`docker-compose.yml`)
-- Requirements: `requirements.txt` (`requirements.txt`)
+## Referências no repositório
 
-Contato
--------
+- Config: `src/config.py` 
+- Producer principal: `src/producer/github_producer.GitHubProducer`
+- Spark consumer: `src/consumer/spark_consumer.compute_metrics`
+- Analytics helpers: `src/analytics/metrics.load_parquet`
+- Tracing helpers: `src/tracing.setup_tracer`
+- Tests: `tests/test_github_producer.py`
+- Compose: `docker-compose.yml`
+- Requirements: `requirements.txt`
+
+## Contato
+
 Abra issues e PRs no repositório. Siga as guidelines acima para contribuições.
 
 ## ⚡ Try It Now (60 seconds)
@@ -322,25 +329,3 @@ Expected output (example):
 | Scalability | ✅ Kafka partitioning, Horizontal scaling | ⚠️ Single process |
 | Testing | ✅ Unit + Integration + Smoke tests | ❌ Manual testing |
 | Documentation | ✅ Architecture diagram, Troubleshooting | ⚠️ Basic usage only |
-- [ ] TLS/SASL para Kafka (MSK-ready)
-- [ ] Schema Registry + Confluent/Glue integration
-- [ ] Exactly-once semantics end-to-end (idempotent producer, transactional writes)
-- [ ] Enhanced language detection (git metadata + GitHub GraphQL)
-- [ ] Enrichment (geo resolution, user timezone inference)
-- [ ] Real-time dashboards com auth & RBAC
-- [ ] CI: GitHub Actions pipeline (lint/test/build badges)
-
-Licença
--------
-MIT (adapte conforme necessário)
-
-Referências no repositório
--------------------------
-- Config: `src/config.py` (`src/config.py`)
-- Producer principal: `src/producer/github_producer.GitHubProducer` (`src/producer/github_producer.py`)
-- Spark consumer: `src/consumer/spark_consumer.compute_metrics` (`src/consumer/spark_consumer.py`)
-- Analytics helpers: `src/analytics/metrics.load_parquet` (`src/analytics/metrics.py`)
-- Tracing helpers: `src/tracing.setup_tracer` (`src/tracing.py`)
-- Tests: `tests/test_github_producer.py` (`tests/test_github_producer.py`)
-- Compose: `docker-compose.yml` (`docker-compose.yml`)
-- Requirements: `requirements.txt` (`requirements.txt`)
