@@ -255,6 +255,15 @@ Troubleshooting
 - OpenTelemetry não ativa: variável `OTEL_EXPORTER_OTLP_ENDPOINT` ausente — tracing é opcional e tem fallback seguro (ver `src/tracing.py`).
 
 Contribuindo
++ ------------
++ 1. Fork -> branch `feature/descrição` -> PR
++ 2. Formatação: Black, lint com Flake8, tipagem com MyPy
++ 3. Rode testes: `pytest -v`
++ 4. Siga conventional commits
++ 
++ ```bash
++ black . && flake8 && mypy src && pytest -v
++ ```
 
 Roadmap
 -------
@@ -335,29 +344,3 @@ Referências no repositório
 - Tests: `tests/test_github_producer.py` (`tests/test_github_producer.py`)
 - Compose: `docker-compose.yml` (`docker-compose.yml`)
 - Requirements: `requirements.txt` (`requirements.txt`)
-
-Contato
--------
-Abra issues e PRs no repositório. Siga as guidelines acima para contribuições.
-# GitHub Events Real-Time Streaming Analytics
-
-## Architecture
-- **Data Source**: GitHub Events API (streaming)
-- **Message Broker**: Apache Kafka
-- **Stream Processing**: Apache Spark Streaming
-- **Storage**: AWS S3 / Local Parquet
-- **Visualization**: Dashboard com métricas em tempo real
-
-## Metrics to Track
-- Most active repositories (commits/hour)
-- Programming language trends
-- Geographic distribution of developers
-- Event type distribution (push, PR, issues, stars)
-- Sentiment analysis on commit messages
-
-## Tech Stack
-- Python 3.11+
-- Apache Kafka
-- Apache Spark (PySpark)
-- Docker & Docker Compose
-- Pandas, Plotly for viz
